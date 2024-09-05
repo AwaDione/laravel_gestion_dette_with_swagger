@@ -1,48 +1,58 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens; // Importez le trait ici
+//use Laravel\Sanctum\HasApiTokens; // Importez le trait ici
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'login',
-        'password',
         'nom',
         'prenom',
-        'role_id',
         'photo',
-        'client_id', 
-        'active', // Ajout du champ active
+        'login',
+        'password',
+        'role_id'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
-        'remember_token',
+        'created_at',
+        'updated_at'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
-        'password' => 'hashed', // Laravel 10+ supporte le cast 'hashed'
-        'active' => 'boolean',  
+        'password' => 'hashed',
     ];
 
-    // Relations
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
- 
-
-    public function client():HasOne
-    {
-        return $this->hasOne(Client::class);
+    function client() {
+        return $this->hasOne(Client::class, 'user_id');
     }
 }

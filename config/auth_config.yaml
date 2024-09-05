@@ -1,0 +1,6 @@
+default: passport
+strategies:
+  passport:
+    class: App\Services\AuthentificationPassport
+  sanctum:
+    class: App\Services\AuthentificationSanctum

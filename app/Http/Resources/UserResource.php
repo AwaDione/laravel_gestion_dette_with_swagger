@@ -17,6 +17,9 @@ class UserResource extends JsonResource
         return [
             'nom' => $this->nom,
             'prenom' => $this->prenom,
+            'login' => $this->login,
+            'photo' => $this->photo,
+            'role' => new RoleResource($this->whenLoaded('role'))
         ];
     }
 }

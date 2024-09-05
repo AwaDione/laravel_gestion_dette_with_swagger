@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Traits;
-
-use App\Enums\StateEnum;
+use App\Enums\StatusResponseEnum;
 
 trait RestResponseTrait
 {
-    public function sendResponse($data,StateEnum $status= StateEnum::SUCCESS, $message = 'Ressource non trouvée',$codeStatut = 200)
+    public function sendResponse(mixed $data = null, StatusResponseEnum $status = StatusResponseEnum::SUCCESS, string $message = 'Ressource non trouvée', $codeStatut = 200)
     {
         return response()->json([
             'data' =>$data,

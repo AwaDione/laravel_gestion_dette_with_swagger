@@ -19,19 +19,19 @@ class LoginRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'login' => 'required|string',
-            'password' => 'required|string',
+            'login' => 'required',
+            'password' => 'required'
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'login.required' => 'Le champ login est obligatoire.',
-            'password.required' => 'Le champ mot de passe est obligatoire.',
+            'password.required' => 'Le champ mot de passe est obligatoire.'
         ];
     }
 }

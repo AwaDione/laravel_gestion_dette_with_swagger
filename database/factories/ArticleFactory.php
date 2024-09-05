@@ -17,13 +17,10 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         return [
-            //factory of arclicle (libelle prix qteStock)
-            'libelle' => $this->faker->sentence(5),
-            'prix' => $this->faker->randomFloat(2, 1, 100),
-            'qteStock' => $this->faker->numberBetween(0, 1),
-           
-
-            
+            'libelle' => $this->faker->unique()->word(),  // Assurez que 'libelle' est unique
+            'reference' => $this->faker->unique()->word(),  // Assurez que 'reference' est unique
+            'prix' => $this->faker->randomFloat(2, 10, 1000),
+            'quantite' => $this->faker->numberBetween(1, 100),
         ];
     }
 }

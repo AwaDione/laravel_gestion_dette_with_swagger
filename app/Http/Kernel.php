@@ -39,10 +39,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
         ],
     ];
 
@@ -66,4 +66,12 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    protected $routeMiddleware = [
+        // Autres middlewares...
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth:api' => \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class, // Ajoutez ceci si ce n'est pas déjà fait
+        'checkRole' => \App\Http\Middleware\CheckUserRole::class, // Vérifier le role de l'utilisateur
+    ];
+    
 }

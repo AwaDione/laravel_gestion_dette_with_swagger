@@ -9,11 +9,11 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['nomRole'];
 
-    // Relations
-    public function users()
-    {
+    protected $hidden = ['created_at', 'updated_at'];
+
+    function users() {
         return $this->hasMany(User::class);
     }
 }

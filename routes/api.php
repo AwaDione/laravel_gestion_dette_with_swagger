@@ -1,39 +1,65 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ArticleController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+
 Route::prefix('v1')->group(function () {
-    // Route::apiResource('clients', ClientController::class);
-    // Route::post('login', [AuthController::class, 'login']);
-    // Route::post('register', [UserController::class, 'register']);
-    Route::prefix('users')->group(function () {
-        Route::post('/', [UserController::class, 'register']);
-        Route::get('/', [UserController::class, 'index']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::group(['middleware' => ['auth:api'], 'prefix' => 'v1'], function () {
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/logout', [AuthController::class, 'logout']);
+});
+
+
+Route::group([
+    'middleware' => ['auth:api', 'checkRole:2'],
+    'prefix' => 'v1'
+], function () {
+    Route::group(['prefix' => 'clients'], function () {
+
+        Route::get('/', [ClientController::class, 'all']);
+        Route::post('/', [ClientController::class, 'store']);
+        Route::post('/telephone', [ClientController::class, 'getByTelephone']);
     });
-    Route::middleware('auth:api')->group(function () {
-        Route::prefix('articles')->group(function () {
-            Route::patch('/{id}',[ArticleController::class,'updateStock']);
-            Route::post('/stock',[ArticleController::class,'updateMultipleStocks']);
-            Route::get('/',[ArticleController::class,'index']);
-            Route::get('/{id}',[ArticleController::class,'show']);
-            Route::post('/libelle',[ArticleController::class,'findByLibelle']);
-            Route::post('/',[ArticleController::class,'store']);
-        });
+    Route::group(['prefix' => 'articles'], function () {
+
+        Route::patch('/{id}', [ArticleController::class, 'updateStockById']);
+        Route::post('/stock', [ArticleController::class, 'updateStock']);
+        Route::get('', [ArticleController::class, 'allWithFilterStock']);
+        Route::get('/all', [ArticleController::class, 'index']);
+        Route::get('/{id}', [ArticleController::class, 'getArticleById']);
+        Route::post('/libelle', [ArticleController::class, 'getArticleByLibelle']);
+        Route::post('/', [ArticleController::class, 'store']);
     });
 });
- 
+
+Route::group([
+    'middleware' => ['auth:api', 'checkRole:1'],
+    'prefix' => 'v1',
+], function () {
+    Route::group(['prefix' => 'users'], function () {
+
+        Route::post('/', [UserController::class, 'store']);
+        Route::get('/', [UserController::class, 'index']);
+    });
+});
+
+Route::group([
+    'middleware' => ['auth:api', 'checkRole:2,3'],
+    'prefix' => 'v1', // Ajout du préfixe global 'v1'
+], function () {
+    Route::group(['prefix' => 'clients'], function () {
+
+        Route::get('/{id}', [ClientController::class, 'getById']);
+        Route::get('/{id}/dettes', [UserController::class, 'listDettesByIdClient']);
+        Route::get('/{id}/user', [ClientController::class, 'clientWithUser']);
+
+    });
+});
